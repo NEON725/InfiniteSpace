@@ -7,9 +7,10 @@ BASE_RESOURCE=
 IS_RESOURCES=
 {
 	Oxygen={},
+	Nitrogen={},
 	Hydrogen={},
 	Water={type="Liquid",volume=3},
-	CarbonDioxide={volume=3},
+	["Carbon Dioxide"]={volume=3},
 	["LV Electricity"]=
 	{
 		type="Energy",
@@ -48,3 +49,5 @@ end
 function GetEquivalencyRatio(wanted,offered)
 	return GetResourceData(wanted).equivalents[offered]
 end
+
+function GetResourceData(wanted) return IS_RESOURCES[wanted] end
