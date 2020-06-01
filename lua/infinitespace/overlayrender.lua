@@ -1,5 +1,8 @@
+local TOGGLE_VISOR="IS_TOGGLE_VISOR"
 if SERVER
 then
+	util.AddNetworkString(TOGGLE_VISOR)
+	net.Receive(TOGGLE_VISOR,function(len,plr) plr.visorUp=net.ReadBool() end)
 	AddCSLuaFile()
 	return
 end
@@ -9,6 +12,7 @@ local POPUP_TEXT_SCALE=1/256
 local POPUP_TEXT_PAD=150
 local POPUP_TEXT_FONT="IS_POPUP_FONT"
 TOOL_TEXT_FONT="IS_TOOL_FONT"
+local HUD_TEXT_FONT="IS_HUD_FONT"
 local POPUP_TEXT_FONT_CONFIGURATOR={
 	font = "Roboto",
 	size = 0.8/POPUP_TEXT_SCALE,
@@ -28,20 +32,41 @@ local POPUP_TEXT_FONT_CONFIGURATOR={
 }
 local TOOL_TEXT_FONT_CONFIGURATOR=table.Copy(POPUP_TEXT_FONT_CONFIGURATOR)
 TOOL_TEXT_FONT_CONFIGURATOR.size=30
+local HUD_TEXT_FONT_CONFIGURATOR=table.Copy(POPUP_TEXT_FONT_CONFIGURATOR)
+HUD_TEXT_FONT_CONFIGURATOR.size=18
 surface.CreateFont(POPUP_TEXT_FONT,POPUP_TEXT_FONT_CONFIGURATOR)
 surface.CreateFont(TOOL_TEXT_FONT,TOOL_TEXT_FONT_CONFIGURATOR)
+surface.CreateFont(HUD_TEXT_FONT,HUD_TEXT_FONT_CONFIGURATOR)
 POPUP_TEXT_LINES={}
+local VISOR_DISPLAY_WIDTH=100
 local contextMenuOpen=false
+local visorData=nil
 local OverlayHeight=ScrH()
-local VisorUp=true
-concommand.Add("toggle_visor",function() VisorUp=not VisorUp end)
+local VisorUp=false
+concommand.Add("toggle_visor",function()
+	VisorUp=not VisorUp
+	net.Start(TOGGLE_VISOR)
+	net.WriteBool(VisorUp)
+	net.SendToServer()
+end)
 CreateClientConVar("visor_movement_rate",10,true,false,"Rate in pixels per frame that visor moves up or down.",0,100)
 CreateClientConVar("visor_max_alpha",100,true,false,"How opaque the visor should be when lifted, from 0-255.",0,255)
 
 hook.Add("HUDPaint","is_overlay",function()
+	if(not visorData or not visorData.displayLines) then return end
 	local MaxAlpha=GetConVar("visor_max_alpha"):GetFloat()
 	local MovementRate=GetConVar("visor_movement_rate"):GetFloat()
-	local InfoHeight=100
+	surface.SetFont(HUD_TEXT_FONT)
+	local rounded=16
+	local textW,textH=0,0
+	for _,line in pairs(visorData.displayLines)
+	do
+		local text=type(line)=="table" and line.text or tostring(line)
+		local tw,th=surface.GetTextSize(text)
+		textH=textH+th
+		if(tw>textW) then textW=tw end
+	end
+	local InfoHeight=textH+rounded*2
 	local TargetHeight=ScrH()
 	if VisorUp then TargetHeight=InfoHeight end
 	local HeightDiff=math.Clamp(TargetHeight-OverlayHeight,-MovementRate,MovementRate)
@@ -51,6 +76,36 @@ hook.Add("HUDPaint","is_overlay",function()
 	local AlphaMul=1-HeightFromMin/MaxHeightFromMin
 	surface.SetDrawColor(200,200,255,AlphaMul*MaxAlpha)
 	surface.DrawTexturedRect(0,0,ScrW(),OverlayHeight)
+	local boxX,boxY=ScrW()/2-textW/2-rounded,OverlayHeight-InfoHeight
+	local y=rounded+boxY
+	draw.RoundedBox(rounded,boxX,boxY,textW+rounded*2,textH+rounded*2,Color(50,50,50,255))
+	for _,line in pairs(visorData.displayLines)
+	do
+		local text,color
+		if(type(line)=="string")
+		then
+			text=line
+			color=Color(255,128,0,255)
+		elseif(type(line)=="table")
+		then
+			text=line.text
+			color=line.color
+		else
+			text=tostring(line)
+			color=Color(200,100,100,255)
+		end
+		draw.DrawText(text,HUD_TEXT_FONT,boxX+rounded,y,color)
+		local tw,th=surface.GetTextSize(text)
+		y=y+th
+	end
+end)
+
+net.Receive(VISOR_UPDATE,function(len)
+	visorData=net.ReadTable()
+	local env=Environment(visorData.env)
+	local lines={env.name}
+	table.insert(lines,env:IsBreathable() and {text="Breathable",color=Color(0,200,0)} or {text="Suffocating",color=Color(255,0,0)})
+	visorData.displayLines=lines
 end)
 
 hook.Add("PostDrawTranslucentRenderables","is_devicepopup",function(Depth,Skybox)
