@@ -32,7 +32,7 @@ end
 function Environment:new(configurator)
 	local retval=
 	{
-		name="Unnamed Planet #"..#AllEnvironments,
+		name="Unnamed Planet",
 		position=Vector(0,0,0),
 		rotation=Angle(0,0,0),
 		radius=0,
@@ -121,9 +121,7 @@ then
 				local drawingFromAtmos=plr.visorUp
 				if(not drawingFromAtmos)
 				then
-					print(oxygenNeeded)
 					oxygenNeeded=oxygenNeeded-plr:RequestResource("Oxygen",oxygenNeeded)
-					print(oxygenNeeded)
 					if(oxygenNeeded>0) then drawingFromAtmos=true end
 				end
 				if(drawingFromAtmos and env:IsBreathable())
