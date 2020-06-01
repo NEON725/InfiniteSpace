@@ -43,17 +43,13 @@ function ENT:Use(ply,caller)
 end
 
 function ENT:GetOverlayText() return "" end
+function ENT:Draw() self:DrawModel() end
 
-function ENT:Draw()
-	self:DrawModel()
-end
-
-function ENT:GetStorageMultiplier()
-	return self:GetNWFloat("storageMultiplier")
-end
+function ENT:GetStorageMultiplier() return self:GetNWFloat("storageMultiplier") end
 
 function ENT:Think()
 	BaseClass.Think(self)
+	self:SynchronizeNWVars()
 	if SERVER
 	then
 		if(not self.lastProcessResourceTime) then self.lastProcessResourceTime=math.floor(CurTime())
@@ -65,20 +61,6 @@ function ENT:Think()
 	end
 end
 
-function ENT:ProcessResources()
-	for ResourceName,Resource in pairs(IS_RESOURCES)
-	do
-		local current=self:GetResource(ResourceName)
-		local max=self:GetMaxResource(ResourceName)
-		if current>max
-		then
-			self:SetResource(ResourceName,max)
-			local diff=current-max
-			diff=diff-self:OfferResourceToNetwork(ResourceName,diff)
-			if diff>0 then self:VentResource(ResourceName,diff) end
-		end
-	end
-end
 
 ENT.Models={"models/roller.mdl"}
 
@@ -86,6 +68,7 @@ include("infinitespace/libmachinenetwork.lua")
 
 --==================== SUB MACHINE LIBRARY
 ENT.IsMachineTab=true
+ENT.ToolSpawnable=true
 
 local MachineLibStack={SPACEMACHINE_LIBRARY}
 function GetTopMachineLibNode() return MachineLibStack[#MachineLibStack] end
