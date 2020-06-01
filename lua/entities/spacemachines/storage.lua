@@ -36,10 +36,6 @@ do
 			self.Baseclass.Initialize(self)
 			self:SetMaxResource(res,math.floor(self:GetStorageMultiplier()/tab.volume))
 		end
-		function ENT:Use(ply,caller)
-			self.Baseclass.Use(self,ply,caller)
-			print(self:GetResource("Oxygen").."/"..self:GetMaxResource("Oxygen"))
-		end
 		FinishSubMachine(prior)
 	end
 end
