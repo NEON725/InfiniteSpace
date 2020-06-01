@@ -119,7 +119,11 @@ then
 		IncorporateTable=function(libTab,tree)
 			for i,v in pairs(libTab)
 			do
-				if v.IsMachineTab
+				if(not v.IsMachineTab)
+				then
+					local node=tree:AddNode(i)
+					IncorporateTable(v,node)
+				elseif(v.ToolSpawnable)
 				then
 					local node=tree:AddNode(i,v.ToolIcon or "icon16/bullet_wrench.png")
 					node.DoClick=function()
@@ -128,9 +132,6 @@ then
 						SpaceMachineToolSetModel(models[1])
 						modelPanel:RebuildModels(models)
 					end
-				else
-					local node=tree:AddNode(i)
-					IncorporateTable(v,node)
 				end
 			end
 		end
