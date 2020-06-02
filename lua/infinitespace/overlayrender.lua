@@ -103,7 +103,7 @@ end)
 net.Receive(VISOR_UPDATE,function(len)
 	visorData=net.ReadTable()
 	local env=Environment(visorData.env)
-	local lines={env.name}
+	local lines={env.name..(env:IsOutside(LocalPlayer()) and " (Outside)" or "")}
 	table.insert(lines,env:IsBreathable() and {text="Breathable",color=Color(0,200,0)} or {text="Suffocating",color=Color(255,0,0)})
 	visorData.displayLines=lines
 end)
