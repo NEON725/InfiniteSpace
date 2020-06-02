@@ -85,6 +85,7 @@ function Environment:IsOutside(arg)
 	end
 	local sunlightHeight=GetConVar("infinitespace_sunlight_height"):GetFloat()
 	local trace=util.QuickTrace(v,Vector(0,0,sunlightHeight),filter)
+	if(not trace) then return false end
 	return (not trace.Hit) or (trace.HitSky) or (not self:ContainsVector(trace.HitPos))
 end
 
