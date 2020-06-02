@@ -46,6 +46,7 @@ function ENT:GetOverlayText() return "" end
 function ENT:Draw() self:DrawModel() end
 
 function ENT:GetStorageMultiplier() return self:GetNWFloat("storageMultiplier") end
+function ENT:GetEnvironment() return GetEnvironmentAtVector(self:GetPos()) end
 
 function ENT:Think()
 	BaseClass.Think(self)
@@ -110,11 +111,11 @@ end
 
 function IncludeSubMachine(classname,filename)
 	if SERVER then AddCSLuaFile(filename) end
-	local prior=BeginSubMachine(classname,ENT)
 	local MachineLibStackLength=#MachineLibStack
+	local prior=BeginSubMachine(classname,ENT)
 	include(filename)
-	PopMachineLibNode(MachineLibStackLength)
 	FinishSubMachine(prior)
+	PopMachineLibNode(MachineLibStackLength)
 end
 
 function AddSubMachineTable(classname,tab)
