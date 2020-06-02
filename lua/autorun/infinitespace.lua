@@ -7,6 +7,6 @@ CreateConVar("infinitespace_suffocation_damage",5,DEFAULT_FLAGS,"Damage per seco
 CreateConVar("infinitespace_max_suit_resources",1000,DEFAULT_FLAGS,"Maximum of each essential resource that can be stored in the suit.",0)
 
 include("infinitespace/resources.lua")
-include("infinitespace/overlayrender.lua")
 include("infinitespace/environments.lua")
+include("infinitespace/overlayrender.lua")
 include("infinitespace/playeroverrides.lua")
