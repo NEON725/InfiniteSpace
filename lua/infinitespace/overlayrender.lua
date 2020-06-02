@@ -119,7 +119,7 @@ hook.Add("PostDrawTranslucentRenderables","is_devicepopup",function(Depth,Skybox
 		return
 	end
 	local vars=ent:GetNWVarTable()
-	local lines={ent.PrintName.." x"..(vars.storageMultiplier or "???")}
+	local lines={ent.PrintName.." x"..(ent:GetStorageMultiplier() or "???")}
 	local storageLines={}
 	local surplusLines={}
 	local resources={}
