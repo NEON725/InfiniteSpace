@@ -11,7 +11,7 @@ function ENT:ProcessResources()
 	self.Baseclass.ProcessResources(self)
 	if SERVER
 	then
-		self:SetResource("Oxygen",self:GetResource("Oxygen")+1)
+		self:ProduceResource("Oxygen",1)
 	end
 end
 

@@ -107,6 +107,9 @@ function ENT:RequestResource(res,amt)
 	end
 	return maxamt-amt
 end
+function ENT:ProduceResource(res,amt)
+	self:SetResource(res,self:GetResource(res)+amt)
+end
 
 function ENT:VentResource(res,diff)
 	local current=self:GetResource(res)
