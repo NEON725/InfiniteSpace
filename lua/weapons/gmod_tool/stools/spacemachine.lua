@@ -71,7 +71,7 @@ end
 
 if CLIENT
 then
-	language.Add("Tool.spacemachine.name","Infinite Space: Machine Spawner")
+	language.Add("Tool.spacemachine.name","Machine Spawner")
 	language.Add("Tool.spacemachine.desc","All machines in a welded or roped contraption share a resource network. Other constraints do not convey linkage.")
 	language.Add("Tool.spacemachine.0","Read machine stats by pointing at it with this tool, or using your cursor with the context menu open.")
 	function TOOL:LeftClick()
