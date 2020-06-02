@@ -75,6 +75,18 @@ function Environment:IsBreathable()
 	local oxygen=100*(atmosphere.Oxygen or 0)/volume
 	return oxygen>=GetConVar("infinitespace_percent_livable_oxygen"):GetInt() and pressure>=GetConVar("infinitespace_percent_livable_min_pressure"):GetInt()
 end
+function Environment:IsOutside(arg)
+	local filter=nil
+	local v
+	if(type(arg)=="Vector") then v=arg
+	else
+		v=arg:LocalToWorld(arg:OBBCenter())
+		filter=arg
+	end
+	local sunlightHeight=GetConVar("infinitespace_sunlight_height"):GetFloat()
+	local trace=util.QuickTrace(v,Vector(0,0,sunlightHeight),filter)
+	return (not trace.Hit) or (trace.HitSky) or (not self:ContainsVector(trace.HitPos))
+end
 
 if SERVER
 then
