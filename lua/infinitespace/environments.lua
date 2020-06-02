@@ -1,4 +1,5 @@
 VISOR_UPDATE="IS_VISOR_UPDATE"
+IS_postInitEntity=IS_postInitEntity or false
 
 Environment=Environment or {}
 Environment.__index=Environment
@@ -98,18 +99,15 @@ then
 
 	include("infinitespace/legacyplanetloader.lua")
 
+	local environmentsLoaded=false
 	function ReloadEnvironments()
+		environmentsLoaded=true
 		LoadMapDefinedEnvironments()
 	end
 
-	if(IS_postInitEntity or false) then ReloadEnvironments() end
-	hook.Add("InitPostEntity","environment_reload",function()
-		IS_postInitEntity=true
-		ReloadEnvironments()
-	end)
-
 	util.AddNetworkString(VISOR_UPDATE)
 	function ProcessPlayerEnvironments()
+		if(not environmentsLoaded) then ReloadEnvironments() end
 		for _,plr in pairs(player.GetAll())
 		do
 			local env=GetEnvironmentAtVector(plr:GetPos())
