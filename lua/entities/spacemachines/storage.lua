@@ -32,8 +32,7 @@ do
 		ENT.Base="spacemachine"
 		ENT.ToolIcon="icon16/database.png"
 		ENT.Models=Models[type]
-		function ENT:Initialize()
-			self.Baseclass.Initialize(self)
+		function ENT:RecalculateStorage()
 			self:SetMaxResource(res,math.floor(self:GetStorageMultiplier()/tab.volume))
 		end
 		FinishSubMachine(prior)

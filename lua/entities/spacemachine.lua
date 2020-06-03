@@ -23,7 +23,7 @@ function ENT:Initialize()
 		if phys:IsValid()
 		then
 			phys:Wake()
-			self:SetStorageMultiplier(math.floor(phys:GetVolume()))
+			self:SetStorageMultiplier(math.floor(phys:GetVolume()/1000))
 		end
 		self:SetUseType(self:GetUseType())
 		self.Inputs=Wire_CreateOutputs(self,self:GetWireInputs())
@@ -46,7 +46,11 @@ function ENT:GetOverlayText() return "" end
 function ENT:Draw() self:DrawModel() end
 
 function ENT:GetStorageMultiplier() return self:GetNWFloat("storageMultiplier") end
-function ENT:SetStorageMultiplier(mul) self:SetNWFloat("storageMultiplier",mul) end
+function ENT:SetStorageMultiplier(mul)
+	self:SetNWFloat("storageMultiplier",mul)
+	if SERVER then self:RecalculateStorage() end
+end
+function ENT:RecalculateStorage() end
 function ENT:GetEnvironment() return GetEnvironmentAtVector(self:GetPos()) end
 
 function ENT:Think()
