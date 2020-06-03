@@ -23,7 +23,7 @@ do
 	ENT.Models=tab.Models
 	function ENT:Initialize()
 		self.Baseclass.Initialize(self)
-		self:SetStorageMultiplier(math.floor(self:GetVolume()/10000))
+		if(SERVER) then self:SetStorageMultiplier(math.floor(self:GetPhysicsObject():GetVolume()/10000)) end
 	end
 	GenerateBasicConverterMachine(ENT,tab.Inputs,tab.Outputs)
 	FinishSubMachine(prior)
