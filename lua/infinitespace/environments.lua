@@ -111,11 +111,25 @@ then
 	end
 
 	include("infinitespace/legacyplanetloader.lua")
+	function ApplyDefaultFluids()
+		for name,env in pairs(AllEnvironments)
+		do
+			env:GetAtmosphere("liquid")["Water"]=env:GetVolume()
+		end
+	end
+	function ApplyDefaultOres()
+		for name,env in pairs(AllEnvironments)
+		do
+			env:GetAtmosphere("solid")["Vespene Gas"]=env:GetVolume()
+		end
+	end
 
 	local environmentsLoaded=false
 	function ReloadEnvironments()
 		environmentsLoaded=true
 		LoadMapDefinedEnvironments()
+		ApplyDefaultFluids()
+		ApplyDefaultOres()
 	end
 
 	util.AddNetworkString(VISOR_UPDATE)
