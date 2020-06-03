@@ -126,8 +126,7 @@ then
 			local env=GetEnvironmentAtVector(plr:GetPos())
 			if(plr:Alive())
 			then
-				local atmos=env:GetAtmosphere()
-				local suit=plr.SuitResources or {}
+				local atmos=plr:GetAtmosphere()
 				local oxygenNeeded=GetConVar("infinitespace_oxygen_use"):GetInt()
 				local drawingFromAtmos=plr.visorUp
 				if(not drawingFromAtmos)
