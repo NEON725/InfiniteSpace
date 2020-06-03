@@ -21,6 +21,10 @@ do
 	local prior=BeginSubMachine("generator_"..i)
 	ENT.PrintName=i
 	ENT.Models=tab.Models
+	function ENT:Initialize()
+		self.Baseclass.Initialize(self)
+		self:SetStorageMultiplier(math.floor(self:GetVolume()/10000))
+	end
 	GenerateBasicConverterMachine(ENT,tab.Inputs,tab.Outputs)
 	FinishSubMachine(prior)
 end
