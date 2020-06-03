@@ -25,6 +25,7 @@ do
 			self.rootAngle=self:GetAngles()
 			self:GetPhysicsObject():EnableMotion(false)
 			self:OnInit()
+			self.IsSpaceMachine=false
 		end
 	end
 
