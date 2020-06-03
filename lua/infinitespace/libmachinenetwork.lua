@@ -157,7 +157,7 @@ function GenerateBasicConverterMachine(ENT,Inputs,Outputs)
 				then
 					local added=self:RequestResourceFromNetwork(res,needed)
 					current=current+added
-					self:SetResource(res,current+added)
+					self:SetResource(res,current)
 					needed=needed-added
 				end
 				if(needed>0) then full=false end
