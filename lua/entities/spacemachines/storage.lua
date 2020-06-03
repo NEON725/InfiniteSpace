@@ -8,7 +8,9 @@ local Models=
 		"models/props_c17/oildrum001.mdl",
 		"models/props_junk/metalgascan.mdl",
 		"models/props_wasteland/laundry_washer001a.mdl",
+		"models/props_mining/watertower.mdl",
 		"models/props_wasteland/horizontalcoolingtank04.mdl",
+		"models/props_silhouettes/pipeline_sec1gate.mdl",
 		"models/props_interiors/BathTub01a.mdl"
 	},
 	Gas=
@@ -18,6 +20,7 @@ local Models=
 		"models/props_c17/canister_propane01a.mdl",
 		"models/props_junk/PropaneCanister001a.mdl",
 		"models/props_citizen_tech/firetrap_propanecanister01a.mdl",
+		"models/props_silhouettes/pipeline_sec1gate.mdl",
 		"models/props_wasteland/horizontalcoolingtank04.mdl"
 	}
 }
