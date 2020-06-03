@@ -59,5 +59,8 @@ do
 			underground[self.ore]=remaining
 		else self:Deplete() end
 	end
+
+	function ENT:GetMachineNetwork() return {self} end
+
 	FinishSubMachine(prior)
 end
