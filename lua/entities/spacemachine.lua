@@ -37,10 +37,7 @@ function ENT:TriggerInput(iname,value) self:SetNWInt(iname,value) end
 function ENT:TooltipDisplayLines() return {} end
 
 function ENT:GetUseType() return SIMPLE_USE end
-function ENT:Use(ply,caller)
-	local IsOn=self:GetNWInt("Power")!=0
-	self:SetNWInt("Power",Either(IsOn,0,1))
-end
+function ENT:Use() end
 
 function ENT:GetOverlayText() return "" end
 function ENT:Draw() self:DrawModel() end
@@ -100,8 +97,8 @@ function BeginSubMachine(newclassname,prior)
 	prior=ENT
 	ENT=table.Copy(ENT)
 	ENT.Baseclass=prior
-	ENT.Base=prior.ClassName
-	ENT.ClassName="spacemachine_"..newclassname
+	ENT.Base="spacemachine"
+	ENT.ClassName="spacemachine_"..newclassname:gsub(" ","_"):lower()
 	return prior
 end
 

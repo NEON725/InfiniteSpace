@@ -18,9 +18,8 @@ PushMachineLibNode("Ore Miner")
 
 for i,tab in pairs(submachines)
 do
-	local prior=BeginSubMachine("oreminer_"..i:gsub(" ","_"):lower())
+	local prior=BeginSubMachine("oreminer_"..i)
 	ENT.PrintName=i
-	ENT.Base="spacemachine"
 	for property,value in pairs(tab) do ENT[property]=value end
 	function ENT:Initialize()
 		self.Baseclass.Initialize(self)
