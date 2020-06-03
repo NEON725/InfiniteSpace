@@ -35,7 +35,7 @@ do
 			self.rootAngle=ent:GetAngles()
 			self:SetPos(self.rootPos)
 			self:SetAngles(self.rootAngle)
-			self.attachedVein=collider
+			self.attachedVein=ent
 			self:OnAttach(collider)
 		end
 	end
@@ -62,7 +62,7 @@ do
 		end
 	end
 
-	function ENT:RequestResource(res,amt) return self.attachedVein and self:RequestResource(res,amt) or 0 end
+	function ENT:RequestResource(res,amt) return self.attachedVein and self.attachedVein:RequestResource(res,amt) or 0 end
 
 	function ENT:TooltipDisplayLines()
 		return {"Touch a "..self.ore," vein with this.","Then weld your"," machinery to this"," miner."}
