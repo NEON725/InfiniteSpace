@@ -64,6 +64,7 @@ function ENT:OfferResourceToNetwork(res,amt)
 	local maxamt=amt
 	for i,v in ipairs(self:GetMachineNetwork())
 	do
+		if(v==self) then continue end
 		amt=amt-v:OfferResource(res,amt)
 	end
 	return maxamt-amt
@@ -81,6 +82,7 @@ function ENT:RequestResourceFromNetwork(res,amt)
 	local maxamt=amt
 	for i,v in ipairs(self:GetMachineNetwork())
 	do
+		if(v==self) then continue end
 		amt=amt-v:RequestResource(res,amt)
 	end
 	return maxamt-amt
@@ -129,6 +131,48 @@ function ENT:ProcessResources()
 			local diff=current-max
 			diff=diff-self:OfferResourceToNetwork(ResourceName,diff)
 			if diff>0 then self:VentResource(ResourceName,diff) end
+		end
+	end
+end
+
+function UseBasicPowerSwitch(self,ply,caller) self:SetPower(not self:GetPower()) end
+function ENT:SetPower(on) self:SetNWBool("power",on) end
+function ENT:GetPower() return self:GetNWBool("power") end
+
+function GenerateBasicConverterMachine(ENT,Inputs,Outputs)
+	ENT.Use=UseBasicPowerSwitch
+	function ENT:RecalculateStorage()
+		for res,amt in pairs(Inputs) do self:SetMaxResource(res,amt*self:GetStorageMultiplier()) end
+	end
+	function ENT:ProcessResources()
+		self.Baseclass.ProcessResources(self)
+		if(self:GetPower())
+		then
+			local full=true
+			for res,_ in pairs(Inputs)
+			do
+				local current,maximum=self:GetResource(res),self:GetMaxResource(res)
+				local needed=maximum-current
+				if(needed>0)
+				then
+					local added=self:RequestResourceFromNetwork(res,needed)
+					current=current+added
+					self:SetResource(res,current+added)
+					needed=needed-added
+				end
+				if(needed>0) then full=false end
+			end
+			if(full)
+			then
+				for res,amt in pairs(Outputs)
+				do
+					self:ProduceResource(res,amt*self:GetStorageMultiplier())
+				end
+				for res,_ in pairs(Inputs)
+				do
+					self:SetResource(res,0)
+				end
+			end
 		end
 	end
 end
