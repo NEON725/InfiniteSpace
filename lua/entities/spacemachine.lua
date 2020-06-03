@@ -51,7 +51,8 @@ function ENT:SetStorageMultiplier(mul)
 	if SERVER then self:RecalculateStorage() end
 end
 function ENT:RecalculateStorage() end
-function ENT:GetEnvironment() return GetEnvironmentAtVector(self:GetPos()) end
+
+include("infinitespace/libmachineplayercommon.lua")
 
 function ENT:Think()
 	BaseClass.Think(self)

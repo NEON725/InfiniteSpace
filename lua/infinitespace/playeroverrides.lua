@@ -1,14 +1,14 @@
+ENT=FindMetaTable("Player")
 if SERVER
 then
 	local validSuitResources={Oxygen=true}
-	local meta=FindMetaTable("Player")
-	function meta:GetResource(res) return (self.suit or {})[res] or 0 end
-	function meta:GetMaxResource(res) return validSuitResources[res] and GetConVar("infinitespace_max_suit_resources"):GetInt() or 0 end
-	function meta:SetResource(res,amt)
+	function ENT:GetResource(res) return (self.suit or {})[res] or 0 end
+	function ENT:GetMaxResource(res) return validSuitResources[res] and GetConVar("infinitespace_max_suit_resources"):GetInt() or 0 end
+	function ENT:SetResource(res,amt)
 		self.suit=self.suit or {}
 		self.suit[res]=amt
 	end
-	function meta:OfferResource(res,amt)
+	function ENT:OfferResource(res,amt)
 		if(not validSuitResources[res]) then return 0 end
 		local current,max=self:GetResource(res),self:GetMaxResource(res)
 		local accepted=math.min(amt,max-current)
@@ -19,7 +19,7 @@ then
 		end
 		return accepted
 	end
-	function meta:RequestResource(res,amt)
+	function ENT:RequestResource(res,amt)
 		local maxamt=amt
 		local takenFromNetwork=self:RequestResourceFromNetwork(res,amt)
 		amt=amt-takenFromNetwork
@@ -36,7 +36,7 @@ then
 		end
 		return maxamt-amt
 	end
-	function meta:RequestResourceFromNetwork(res,amt)
+	function ENT:RequestResourceFromNetwork(res,amt)
 		local maxamt=amt
 		if(self:InVehicle() and self:GetVehicle().IsSpaceMachine)
 		then
@@ -52,4 +52,13 @@ then
 		end
 		return maxamt-amt
 	end
+else
+	-- Shim to enable IsInWorld method clientside.
+	function ENT:IsInWorld()
+		local tr={collisiongroup=COLLISION_GROUP_WORLD}
+		tr.start=self:GetPos()
+		tr.endpos=tr.start
+		return not util.TraceLine(tr).HitWorld
+	end
 end
+include("infinitespace/libmachineplayercommon.lua")
