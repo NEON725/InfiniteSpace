@@ -20,7 +20,7 @@ do
 		self.Baseclass.Initialize(self)
 		if SERVER
 		then
-			self:SetStorageMultiplier(100)
+			self:SetStorageMultiplier(1000)
 			self.rootPos=self:GetPos()
 			self.rootAngle=self:GetAngles()
 			self:GetPhysicsObject():EnableMotion(false)
@@ -56,7 +56,7 @@ do
 		local remaining=underground[self.ore] or 0
 		if(remaining>0)
 		then
-			remaining=remaining-self:OfferResource(self.ore,math.min(8,underground[self.ore]))
+			remaining=remaining-self:OfferResource(self.ore,math.min(25,underground[self.ore]))
 			underground[self.ore]=remaining
 		else self:Deplete() end
 	end
