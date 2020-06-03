@@ -41,8 +41,8 @@ function CreateSpaceMachine(plr,type,model,weld,flat)
 	if(not tr.Hit) then return end
 	ent:SetPos(tr.HitPos)
 	ent:SetModel(model)
-	ent:Spawn()
 	MoveToSurface(ent,tr,flat)
+	ent:Spawn()
 	if(weld and not tr.HitWorld) then constraint.Weld(ent,tr.Entity,0,0,0,true,false) end
 	undo.Create(ent.PrintName..": "..model)
 	undo.AddEntity(ent)
