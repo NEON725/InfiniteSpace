@@ -6,6 +6,7 @@ local generators=
 		Outputs={["MV Electricity"]=1},
 		Models=
 		{
+			"models/props_c17/trappropeller_engine.mdl",
 			"models/props_vehicles/generatortrailer01.mdl",
 			"models/props_outland/generator_static01a.mdl",
 			"models/props_vehicles/generator.mdl",
