@@ -181,7 +181,7 @@ then
 					local suitMeta=plr:GetStorageTable()
 					for resname,tab in pairs(suitMeta)
 					do
-						local accepting=plr:GetAcceptingResource(resname)
+						local accepting=math.min(maxDraw-tab.current,plr:GetAcceptingResource(resname))
 						if(accepting>0)
 						then
 							local multipliers=GetResourceData(resname).equivalents
