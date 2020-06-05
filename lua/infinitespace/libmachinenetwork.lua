@@ -1,20 +1,25 @@
 function ENT:GetMachineNetwork()
-	local retVal={}
-	local scannedEnts={}
-	local entsToScan={self}
-	while(#entsToScan>0)
-	do
-		local ent=table.remove(entsToScan)
-		table.insert(scannedEnts,ent)
-		if(ent.IsSpaceMachine) then table.insert(retVal,ent) end
-		for _,type in pairs({"Weld","Rope"})
+	if(CurTime()>((self.machineNetwork or {}).timestamp or 0)+1)
+	then
+		local machines={}
+		self.machineNetwork={timestamp=CurTime(),machines=machines}
+		local scannedEnts={}
+		local entsToScan={self}
+		while(#entsToScan>0)
 		do
-			local constraints=constraint.FindConstraints(ent,type)
-			for _,con in pairs(constraints)
+			local ent=table.remove(entsToScan)
+			table.insert(scannedEnts,ent)
+			if(ent.IsSpaceMachine)
+			then
+				table.insert(machines,ent)
+				ent.machineNetwork=self.machineNetwork
+			end
+			for _,type in pairs({"Weld","Rope"})
 			do
-				local newEnts={con.Ent1,con.Ent2}
-				for __,newEnt in pairs(newEnts)
+				local constraints=constraint.FindConstraints(ent,type)
+				for _,con in pairs(constraints)
 				do
+					local newEnt=(con.Ent1==ent) and con.Ent2 or con.Ent1
 					local alreadyScanned=false
 					for ___,oldEnt in pairs(scannedEnts)
 					do
@@ -24,12 +29,15 @@ function ENT:GetMachineNetwork()
 							break
 						end
 					end
-					for ___,oldEnt in pairs(entsToScan)
-					do
-						if(oldEnt==newEnt)
-						then
-							alreadyScanned=true
-							break
+					if(not alreadyScanned)
+					then
+						for ___,oldEnt in pairs(entsToScan)
+						do
+							if(oldEnt==newEnt)
+							then
+								alreadyScanned=true
+								break
+							end
 						end
 					end
 					if(not alreadyScanned) then table.insert(entsToScan,newEnt) end
@@ -37,7 +45,7 @@ function ENT:GetMachineNetwork()
 			end
 		end
 	end
-	return retVal
+	return self.machineNetwork.machines
 end
 
 function ENT:OfferResourceToNetwork(res,amt)
