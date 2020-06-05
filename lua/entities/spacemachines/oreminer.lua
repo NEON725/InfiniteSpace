@@ -14,7 +14,7 @@ local submachines=
 	}
 }
 
-PushMachineLibNode("Ore Miner")
+PushMachineLibNode("Mining")
 
 for i,tab in pairs(submachines)
 do
