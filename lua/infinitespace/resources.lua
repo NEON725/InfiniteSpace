@@ -14,7 +14,7 @@ IS_RESOURCES=
 		equivalents=
 		{
 			["LV Electricity"]=1,
-			["NV Electricity"]=5,
+			["MV Electricity"]=5,
 			["HV Electricity"]=25
 		}
 	},
