@@ -145,7 +145,8 @@ then
 				local drawingFromAtmos=plr.visorUp
 				if(not drawingFromAtmos)
 				then
-					oxygenNeeded=oxygenNeeded-plr:RequestResource("Oxygen",oxygenNeeded)
+					oxygenNeeded=oxygenNeeded-plr:RequestResourceFromNetwork("Oxygen",oxygenNeeded)
+					if(oxygenNeeded>0) then	oxygenNeeded=oxygenNeeded-plr:RequestResource("Oxygen",oxygenNeeded) end
 					if(oxygenNeeded>0) then drawingFromAtmos=true end
 				end
 				if(drawingFromAtmos and env:IsBreathable())
@@ -168,11 +169,11 @@ then
 					dmg:SetDamageType(DMG_DROWN)
 					plr:TakeDamageInfo(dmg)
 				end
-				plr.SuitResources=suit
 			end
 			net.Start(VISOR_UPDATE)
-			net.WriteTable({env=env,suit=suit})
+			net.WriteTable({env=env})
 			net.Send(plr)
+			plr:SynchronizeNWVars()
 		end
 	end
 	timer.Create("environment_playerproc",1,0,ProcessPlayerEnvironments)

@@ -1,40 +1,13 @@
 ENT=FindMetaTable("Player")
+include("infinitespace/libmachineplayercommon.lua")
 if SERVER
 then
-	local validSuitResources={Oxygen=true}
-	function ENT:GetResource(res) return (self.suit or {})[res] or 0 end
+	local validSuitResources={Oxygen=true,Heating=true,Cooling=true}
 	function ENT:GetMaxResource(res) return validSuitResources[res] and GetConVar("infinitespace_max_suit_resources"):GetInt() or 0 end
-	function ENT:SetResource(res,amt)
-		self.suit=self.suit or {}
-		self.suit[res]=amt
-	end
+	local _OfferResource=ENT.OfferResource
 	function ENT:OfferResource(res,amt)
 		if(not validSuitResources[res]) then return 0 end
-		local current,max=self:GetResource(res),self:GetMaxResource(res)
-		local accepted=math.min(amt,max-current)
-		if(accepted>0)
-		then
-			current=current+accepted
-			self:SetResource(res,current)
-		end
-		return accepted
-	end
-	function ENT:RequestResource(res,amt)
-		local maxamt=amt
-		local takenFromNetwork=self:RequestResourceFromNetwork(res,amt)
-		amt=amt-takenFromNetwork
-		if(amt>0)
-		then
-			local current=self:GetResource(res)
-			local takenFromSuit=math.min(amt,current)
-			if(takenFromSuit>0)
-			then
-				current=current-takenFromSuit
-				amt=amt-takenFromSuit
-				self:SetResource(res,current)
-			end
-		end
-		return maxamt-amt
+		return _OfferResource(self,res,amt)
 	end
 	function ENT:RequestResourceFromNetwork(res,amt)
 		local maxamt=amt
@@ -61,4 +34,3 @@ else
 		return not util.TraceLine(tr).HitWorld
 	end
 end
-include("infinitespace/libmachineplayercommon.lua")

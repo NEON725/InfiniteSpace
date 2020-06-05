@@ -49,8 +49,6 @@ function ENT:SetStorageMultiplier(mul)
 end
 function ENT:RecalculateStorage() end
 
-include("infinitespace/libmachineplayercommon.lua")
-
 function ENT:Think()
 	BaseClass.Think(self)
 	self:SynchronizeNWVars()
@@ -65,10 +63,10 @@ function ENT:Think()
 	end
 end
 
-
 ENT.Models={"models/roller.mdl"}
 
 include("infinitespace/libmachinenetwork.lua")
+include("infinitespace/libmachineplayercommon.lua")
 
 --==================== SUB MACHINE LIBRARY
 ENT.IsMachineTab=true
