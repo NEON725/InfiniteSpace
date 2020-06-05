@@ -24,12 +24,13 @@ function ENT:GetResource(res) return self:GetActualOrPendingNWVar("resource_curr
 function ENT:GetMaxResource(res) return self:GetActualOrPendingNWVar("resource_maximum_"..res) or 0 end
 function ENT:SetResource(res,amt) return self:AssignPendingNWVar("resource_current_"..res,amt) end
 function ENT:SetMaxResource(res,amt) return self:AssignPendingNWVar("resource_maximum_"..res,amt) end
+function ENT:GetAcceptingResource(res) return self:GetMaxResource(res)-self:GetResource(res) end
 function ENT:GetStorageTable()
         local retval={}
         for name,_ in pairs(IS_RESOURCES)
         do
                 local current,maximum=self:GetResource(name),self:GetMaxResource(name)
-                if(current>0 or maximum>0) then retval[name]={current=current,maximum=maximum} end
+                if(current>0 or maximum>0) then retval[name]={current=current,maximum=maximum,accepting=self:GetAcceptingResource(name)} end
         end
         return retval
 end
