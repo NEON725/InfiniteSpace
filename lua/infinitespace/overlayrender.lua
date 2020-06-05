@@ -108,6 +108,7 @@ net.Receive(VISOR_UPDATE,function(len)
 	local phaseTable=(phaseText=="solid" and {text="Underground",color=Color(200,100,0)}) or (phaseText=="liquid" and {text="Underwater",color=Color(0,128,255)})
 	if(phaseTable) then table.insert(lines,phaseTable) end
 	table.insert(lines,env:IsBreathable() and {text="Breathable",color=Color(0,200,0)} or {text="Suffocating",color=Color(255,0,0)})
+	table.insert(lines,"O2: "..LocalPlayer():GetResource("Oxygen").." HT: "..LocalPlayer():GetResource("Heating").." CL: "..LocalPlayer():GetResource("Cooling"))
 	visorData.displayLines=lines
 end)
 
