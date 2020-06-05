@@ -68,6 +68,8 @@ do
 	do
 		if tab[i]==nil then tab[i]=v end
 	end
+	if(tab.equivalents==BASE_RESOURCE.equivalents) then tab.equivalents={} end
+	tab.equivalents[res]=1
 end
 
 function GetEquivalencyRatio(wanted,offered)
