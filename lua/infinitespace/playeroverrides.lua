@@ -2,11 +2,18 @@ ENT=FindMetaTable("Player")
 include("infinitespace/libmachineplayercommon.lua")
 if SERVER
 then
-	local validSuitResources={Oxygen=true,Heating=true,Cooling=true}
-	function ENT:GetMaxResource(res) return validSuitResources[res] and GetConVar("infinitespace_max_suit_resources"):GetInt() or 0 end
+	function GetValidSuitResources() return {"Oxygen","Heating","Cooling"} end
+	function IsValidSuitResource(res)
+		for _,v in pairs(GetValidSuitResources())
+		do
+			if(v==res) then return true end
+		end
+		return false
+	end
+	function ENT:GetMaxResource(res) return IsValidSuitResource(res) and GetConVar("infinitespace_max_suit_resources"):GetInt() or 0 end
 	local _OfferResource=ENT.OfferResource
 	function ENT:OfferResource(res,amt)
-		if(not validSuitResources[res]) then return 0 end
+		if(not IsValidSuitResource(res)) then return 0 end
 		return _OfferResource(self,res,amt)
 	end
 	function ENT:RequestResourceFromNetwork(res,amt)
