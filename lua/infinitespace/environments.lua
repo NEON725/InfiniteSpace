@@ -133,7 +133,7 @@ then
 	end
 
 	util.AddNetworkString(VISOR_UPDATE)
-	function ProcessPlayerEnvironments()
+	timer.Create("IS_PLAYERPROC",1,0,function()
 		if(not environmentsLoaded) then ReloadEnvironments() end
 		for _,plr in pairs(player.GetAll())
 		do
@@ -159,7 +159,10 @@ then
 						oxygenNeeded=oxygenNeeded-takenFromAtmos
 					end
 				end
-				if(oxygenNeeded>0)
+				if(oxygenNeeded==0)
+				then
+					plr.lastBreath=CurTime()
+				elseif(CurTime()>=plr.lastBreath+GetConVar("infinitespace_suffocation_delay"):GetInt())
 				then
 					local dmg=DamageInfo()
 					dmg:SetAttacker(plr)
@@ -168,6 +171,33 @@ then
 					dmg:SetDamagePosition(plr:GetPos()+Vector(0,0,100))
 					dmg:SetDamageType(DMG_DROWN)
 					plr:TakeDamageInfo(dmg)
+				elseif(not plr.visorUp)
+				then
+					plr:EmitSound("replay/cameracontrolerror.wav",35)
+				end
+				if(plr.visorUp)
+				then
+					local maxDraw=GetConVar("infinitespace_max_suit_draw_open"):GetInt()
+					local suitMeta=plr:GetStorageTable()
+					for resname,tab in pairs(suitMeta)
+					do
+						local accepting=plr:GetAcceptingResource(resname)
+						if(accepting>0)
+						then
+							local multipliers=GetResourceData(resname).equivalents
+							for eres,mul in pairs(multipliers)
+							do
+								local available=atmos[eres] or 0
+								local desired=accepting/mul
+								local taken=math.min(desired,available)
+								if(taken>0)
+								then
+									atmos[eres]=atmos[eres]-taken
+									plr:SetResource(resname,plr:GetResource(resname)+taken*mul)
+								end
+							end
+						end
+					end
 				end
 			end
 			net.Start(VISOR_UPDATE)
@@ -175,6 +205,13 @@ then
 			net.Send(plr)
 			plr:SynchronizeNWVars()
 		end
-	end
-	timer.Create("environment_playerproc",1,0,ProcessPlayerEnvironments)
+	end)
+
+	hook.Add("PlayerSpawn","IS_PLAYERSPAWN",function(plr,transition)
+		plr.lastBreath=CurTime()
+		for res,tab in pairs(plr:GetStorageTable())
+		do
+			plr:SetResource(res,0)
+		end
+	end)
 end
