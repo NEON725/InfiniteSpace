@@ -8,7 +8,7 @@ ENT.Models=
 }
 
 function ENT:Use(plr,caller)
-	for _,res in pairs(GetValidSuitResources())
+	for _,res in pairs(plr:GetValidSuitResources())
 	do
 		local accepting=plr:GetAcceptingResource(res)
 		local acquired=self:RequestResourceFromNetwork(res,accepting)
