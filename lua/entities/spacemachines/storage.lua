@@ -28,7 +28,8 @@ local Models=
 for res,tab in pairs(IS_RESOURCES)
 do
 	local type=tab.type
-	if type=="Liquid" or type=="Gas"
+	if(tab.abstract) then continue end
+	if(type=="Liquid" or type=="Gas")
 	then
 		local prior=BeginSubMachine("storage_"..res:lower())
 		ENT.PrintName=res.." Storage"

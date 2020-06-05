@@ -2,10 +2,33 @@ BASE_RESOURCE=
 {
 	volume=1,
 	equivalents={},
-	type="Gas"
+	type="Gas",
+	abstract=false
 }
 IS_RESOURCES=
 {
+	Heating=
+	{
+		abstract=true,
+		type="Energy",
+		equivalents=
+		{
+			["LV Electricity"]=1,
+			["NV Electricity"]=5,
+			["HV Electricity"]=25
+		}
+	},
+	Cooling=
+	{
+		abstract=true,
+		type="Energy",
+		equivalents=
+		{
+			Water=1,
+			["Liquid Nitrogen"]=20,
+			["Liquid Hydrogen"]=20
+		}
+	},
 	Oxygen={},
 	Nitrogen={},
 	Hydrogen={},
