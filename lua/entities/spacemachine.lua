@@ -23,7 +23,7 @@ function ENT:Initialize()
 		if phys:IsValid()
 		then
 			phys:Wake()
-			self:SetStorageMultiplier(math.floor(phys:GetVolume()/1000))
+			self:SetStorageMultiplier(math.floor(phys:GetVolume()/10))
 		end
 		self:SetUseType(self:GetUseType())
 		self.Inputs=Wire_CreateOutputs(self,self:GetWireInputs())
