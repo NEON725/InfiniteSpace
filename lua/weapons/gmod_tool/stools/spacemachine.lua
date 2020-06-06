@@ -15,11 +15,12 @@ local MoveToSurface=function(ent,tr,createflat)
 	local ang
 	if(not createflat)
 	then
-		if(tr.HitNormal==Vector(0,0,1))
+		if(tr.HitNormal.x==0 and tr.HitNormal.y==0)
 		then
 			local normal=tr.Normal
 			normal.z=0
 			ang=normal:GetNormalized():Angle()
+			if(tr.HitNormal.z<0) then ang:RotateAroundAxis(normal,180) end
 		else
 			local sideVector=tr.HitNormal:Cross(Vector(0,0,1)):GetNormalized()
 			ang=tr.HitNormal:Angle()
@@ -35,7 +36,7 @@ local SpaceMachineToolSetModel=function(model) --This has to be a global because
 	GetConVar("spacemachine_model"):SetString(model)
 end
 
-function CreateSpaceMachine(plr,type,model,weld,flat)
+function CreateSpaceMachine(plr,type,model,weld,flat,freeze)
 	local ent=ents.Create(type)
 	local tr=plr:GetEyeTrace()
 	if(not tr.Hit) then return end
@@ -43,6 +44,7 @@ function CreateSpaceMachine(plr,type,model,weld,flat)
 	ent:SetModel(model)
 	MoveToSurface(ent,tr,flat)
 	ent:Spawn()
+	ent:GetPhysicsObject():EnableMotion(not freeze)
 	if(weld and not tr.HitWorld) then constraint.Weld(ent,tr.Entity,0,0,0,true,false) end
 	undo.Create(ent.PrintName..": "..model)
 	undo.AddEntity(ent)
@@ -74,12 +76,13 @@ then
 	language.Add("Tool.spacemachine.name","Machine Spawner")
 	language.Add("Tool.spacemachine.desc","All machines in a welded or roped contraption share a resource network. Other constraints do not convey linkage.")
 	language.Add("Tool.spacemachine.0","Read machine stats by pointing at it with this tool, or using your cursor with the context menu open.")
-	function TOOL:LeftClick()
+	function TOOL:LeftClick(tr)
 		net.Start(NET_STRING)
 		net.WriteString(GetConVar("spacemachine_type"):GetString())
 		net.WriteString(GetConVar("spacemachine_model"):GetString())
-		net.WriteInt(GetConVar("spacemachine_weld"):GetInt(),2)
-		net.WriteInt(GetConVar("spacemachine_createflat"):GetInt(),2)
+		net.WriteBool(GetConVar("spacemachine_weld"):GetInt()==1)
+		net.WriteBool(GetConVar("spacemachine_createflat"):GetInt()==1)
+		net.WriteBool(tr.HitWorld or (IsValid(tr.Entity) and IsValid(tr.Entity:GetPhysicsObject()) and tr.Entity:GetPhysicsObject():IsMotionEnabled()))
 		net.SendToServer()
 		return true
 	end
@@ -160,18 +163,20 @@ then
 	net.Receive(NET_STRING,function(len,plr)
 		local type=net.ReadString()
 		local model=net.ReadString()
-		local weld=net.ReadInt(2)
-		local createflat=net.ReadInt(2)
-		CreateSpaceMachine(plr,type,model,weld==1,createflat==1)
+		local weld=net.ReadBool()
+		local createflat=net.ReadBool()
+		local freeze=net.ReadBool()
+		CreateSpaceMachine(plr,type,model,weld,createflat,freeze)
 	end)
 	if(game.SinglePlayer())
 	then
-		function TOOL:LeftClick()
+		function TOOL:LeftClick(tr)
 			local type=GetConVar("spacemachine_type"):GetString()
 			local model=GetConVar("spacemachine_model"):GetString()
 			local weld=GetConVar("spacemachine_weld"):GetInt()
 			local flat=GetConVar("spacemachine_createflat"):GetInt()
-			CreateSpaceMachine(self:GetOwner(),type,model,weld==1,flat==1)
+			local freeze=tr.HitWorld or (IsValid(tr.Entity) and IsValid(tr.Entity:GetPhysicsObject()) and tr.Entity:GetPhysicsObject():IsMotionEnabled())
+			CreateSpaceMachine(self:GetOwner(),type,model,weld==1,flat==1,freeze)
 			return true
 		end
 	end
