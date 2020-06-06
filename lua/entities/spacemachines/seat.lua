@@ -6,6 +6,7 @@ hook.Add("PlayerSpawnedVehicle","IS_SEAT_OVERRIDE",function(plr,ent)
 		ent.IsSpaceMachine=true
 		ENT=ent
 		include("infinitespace/libmachinenetwork.lua")
+		include("infinitespace/libmachineplayercommon.lua")
 		function ent:GetStorageMultiplier() return 0 end
 		function ent:TooltipDisplayLines()
 			return {"Players use resources"," from their ship","when seated."}
