@@ -32,7 +32,7 @@ IS_RESOURCES=
 	Oxygen={},
 	Nitrogen={},
 	Hydrogen={},
-	["Vespene Gas"]={type="Liquid",volume=5},
+	["Vespene Gas"]={volume=5},
 	Water={type="Liquid",volume=3},
 	["Carbon Dioxide"]={volume=3},
 	["LV Electricity"]=
