@@ -52,7 +52,7 @@ function ENT:OfferResourceToNetwork(res,amt)
 	local maxamt=amt
 	for i,v in ipairs(self:GetMachineNetwork())
 	do
-		if(v==self) then continue end
+		if(not IsValid(v) or v==self) then continue end
 		amt=amt-v:OfferResource(res,amt)
 	end
 	return maxamt-amt
@@ -61,7 +61,7 @@ function ENT:RequestResourceFromNetwork(res,amt)
 	local maxamt=amt
 	for i,v in ipairs(self:GetMachineNetwork())
 	do
-		if(v==self) then continue end
+		if(not IsValid(v) or v==self) then continue end
 		amt=amt-v:RequestResource(res,amt)
 	end
 	return maxamt-amt
