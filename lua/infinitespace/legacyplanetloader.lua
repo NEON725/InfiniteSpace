@@ -63,8 +63,8 @@ function LoadMapDefinedEnvironments()
 		local environment=Environment({position=logic:GetPos(),rotation=logic:GetAngles()})
 		if style == "planet" then
 			environment.shape=EnvironmentShape("sphere",radius)
-			local shadetemp=num(keyValues.Case05)
-			local littemp=num(keyValues.Case06)
+			environment.temperature=num(keyValues.Case05)
+			environment.outsideTemperature=num(keyValues.Case06)
 			local colorref=keyValues.Case07
 			if(colorref and string.sub(colorref,1,6) == "color_") then environment.name = string.upper(string.sub(colorref,7,7))..string.sub(colorref,8) end -- Some 'planet's reference a planet_color logic_case like 'color_kobol'
 			local volume=environment:GetVolume()
@@ -78,8 +78,8 @@ function LoadMapDefinedEnvironments()
 				environment.shape=EnvironmentShape("sphere",num(keyValues.Case02))
 			end
 			local pressure=num(keyValues.Case05)
-			local shadetemp=num(keyValues.Case06)
-			local littemp=num(keyValues.Case07)
+			environment.temperature=num(keyValues.Case06)
+			environment.outsideTemperature=num(keyValues.Case07)
 			local o2,co2,n,h=(num(keyValues.Case09) or 0),(num(keyValues.Case10) or 0),(num(keyValues.Case11) or 0),(num(keyValues.Case12) or 0)
 			local filledAtmosphereMul=(atmosphere+pressure)/2
 			local volume=environment:GetVolume()
@@ -90,7 +90,6 @@ function LoadMapDefinedEnvironments()
 				Nitrogen=n*volume*filledAtmosphereMul,
 				Hydrogen=h*volume*filledAtmosphereMul
 			}
-
 		elseif style == "star" or style == "star2" then
 			environment.name="Star #"..#AllEnvironments
 			environment.shape.radius=num(keyValues.Case02)

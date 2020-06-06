@@ -43,7 +43,9 @@ function Environment:new(configurator)
 			gas={},
 			liquid={},
 			solid={}
-		}
+		},
+		temperature=0,
+		outsideTemperature=nil
 	}
 	function applyConfigurator(host,configurator)
 		for i,v in pairs(configurator)
@@ -87,6 +89,18 @@ function Environment:IsOutside(arg)
 	local trace=util.QuickTrace(v,Vector(0,0,sunlightHeight),filter)
 	if(not trace) then return false end
 	return (not trace.Hit) or (trace.HitSky) or (not self:ContainsVector(trace.HitPos))
+end
+function Environment:GetTemperature(arg)
+	return self:IsOutside(arg) and self.outsideTemperature or self.temperature
+end
+--Returns -1,0,1 for cold, temperature, hot respectively
+function Environment:GetTemperateRating(arg)
+	local temp=self:GetTemperature(arg)
+	local min=GetConVar("infinitespace_min_livable_temperature"):GetInt()
+	local max=GetConVar("infinitespace_max_livable_temperature"):GetInt()
+	if(temp<min) then return -1 end
+	if(temp>max) then return 1 end
+	return 0
 end
 
 if SERVER
@@ -141,25 +155,35 @@ then
 			if(plr:Alive())
 			then
 				local atmos=plr:GetAtmosphere()
-				local oxygenNeeded=GetConVar("infinitespace_oxygen_use"):GetInt()
+				local tempRating=plr:GetTemperateRating()
+				local needs=
+				{
+					Oxygen=GetConVar("infinitespace_oxygen_use"):GetInt(),
+					Heating=(tempRating==-1) and GetConVar("infinitespace_heating_use"):GetInt() or 0,
+					Cooling=(tempRating==1) and GetConVar("infinitespace_cooling_use"):GetInt() or 0
+				}
 				local drawingFromAtmos=plr.visorUp
 				if(not drawingFromAtmos)
 				then
-					oxygenNeeded=oxygenNeeded-plr:RequestResourceFromNetwork("Oxygen",oxygenNeeded)
-					if(oxygenNeeded>0) then	oxygenNeeded=oxygenNeeded-plr:RequestResource("Oxygen",oxygenNeeded) end
-					if(oxygenNeeded>0) then drawingFromAtmos=true end
+					for res,needed in pairs(needs)
+					do
+						needed=needed-plr:RequestResourceFromNetwork(res,needed)
+						needed=needed-plr:RequestResource(res,needed)
+						needs[res]=needed
+					end
+					if(needs.Oxygen>0) then drawingFromAtmos=true end
 				end
 				if(drawingFromAtmos and env:IsBreathable())
 				then
 					local oxygenInAtmos=atmos.Oxygen
 					if(oxygenInAtmos)
 					then
-						local takenFromAtmos=math.min(oxygenInAtmos,oxygenNeeded)
+						local takenFromAtmos=math.min(oxygenInAtmos,needs.Oxygen)
 						atmos.Oxygen=oxygenInAtmos-takenFromAtmos
-						oxygenNeeded=oxygenNeeded-takenFromAtmos
+						needs.Oxygen=needs.Oxygen-takenFromAtmos
 					end
 				end
-				if(oxygenNeeded==0)
+				if(needs.Oxygen==0)
 				then
 					plr.lastBreath=CurTime()
 				elseif(CurTime()>=plr.lastBreath+GetConVar("infinitespace_suffocation_delay"):GetInt())
@@ -174,6 +198,17 @@ then
 				elseif(not plr.visorUp)
 				then
 					plr:EmitSound("replay/cameracontrolerror.wav",35)
+				end
+				for res,needed in pairs(needs)
+				do
+					if(res=="Oxygen" or needed==0) then continue end
+					local dmg=DamageInfo()
+					dmg:SetAttacker(plr)
+					dmg:SetInflictor(plr)
+					dmg:SetDamage(GetConVar("infinitespace_temperature_damage"):GetInt())
+					dmg:SetDamagePosition(plr:GetPos()+Vector(0,0,100))
+					dmg:SetDamageType((res=="Cooling" and DMG_BURN) or DMG_ACID)
+					plr:TakeDamageInfo(dmg)
 				end
 				if(plr.visorUp)
 				then

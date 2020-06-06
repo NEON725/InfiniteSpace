@@ -8,6 +8,11 @@ CreateConVar("infinitespace_max_suit_resources",1000,DEFAULT_FLAGS,"Maximum of e
 CreateConVar("infinitespace_sunlight_height",5000,DEFAULT_FLAGS,"Height over a point after which to assume the point is outside.",0)
 CreateConVar("infinitespace_max_suit_draw_open",50,DEFAULT_FLAGS,"Amount of resources gathered from environment with visor open.",0)
 CreateConVar("infinitespace_suffocation_delay",10,DEFAULT_FLAGS,"Time in seconds that a player can hold their breath.",0)
+CreateConVar("infinitespace_max_livable_temperature",320,DEFAULT_FLAGS,"Maximum temperature that will not require Coolant to live.",0)
+CreateConVar("infinitespace_min_livable_temperature",280,DEFAULT_FLAGS,"Minimum temperature that will not require Heating to live.",0)
+CreateConVar("infinitespace_heating_use",5,DEFAULT_FLAGS,"Amount of heating used per second in cold environments.",0)
+CreateConVar("infinitespace_cooling_use",5,DEFAULT_FLAGS,"Amount of cooling used per second in hot environments.",0)
+CreateConVar("infinitespace_temperature_damage",5,DEFAULT_FLAGS,"Damage per second from extreme temperatures.",0)
 
 include("infinitespace/resources.lua")
 include("infinitespace/environments.lua")
