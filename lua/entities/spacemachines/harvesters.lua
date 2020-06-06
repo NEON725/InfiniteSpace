@@ -44,10 +44,13 @@ do
 				local gathered=self:RequestResourceFromNetwork("LV Electricity",requiredPower)
 				local gatherMultiplier=math.floor(self:GetStorageMultiplier()*gathered/requiredPower)
 				local atmos=self:GetAtmosphere()
-				local inAtmos=atmos[res]
+				local inAtmos=atmos[res] or 0
 				local taken=math.min(inAtmos,gatherMultiplier)
-				atmos[res]=atmos[res]-taken
-				self:ProduceResource(self.resource,taken)
+				if(taken>0)
+				then
+					atmos[res]=inAtmos-taken
+					self:ProduceResource(self.resource,taken)
+				end
 			end
 		end
 		FinishSubMachine(prior)
