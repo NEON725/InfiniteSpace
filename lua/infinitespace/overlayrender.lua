@@ -9,6 +9,7 @@ end
 
 local POPUP_MOVE_ASIDE_RADIUS=100
 local POPUP_AUTO_OPEN_DISTANCE=100
+local POPUP_ANIMATION_SPEED=1
 local POPUP_MINIMUM_WIDTH=12
 local POPUP_MAXIMUM_WIDTH=80
 local POPUP_TEXT_SCALE=1/256
@@ -41,6 +42,7 @@ surface.CreateFont(POPUP_TEXT_FONT,POPUP_TEXT_FONT_CONFIGURATOR)
 surface.CreateFont(TOOL_TEXT_FONT,TOOL_TEXT_FONT_CONFIGURATOR)
 surface.CreateFont(HUD_TEXT_FONT,HUD_TEXT_FONT_CONFIGURATOR)
 POPUP_TEXT_LINES={}
+local popupWidth=0
 local VISOR_DISPLAY_WIDTH=100
 local contextMenuOpen=false
 local visorData=nil
@@ -128,6 +130,7 @@ hook.Add("PostDrawTranslucentRenderables","is_devicepopup",function(Depth,Skybox
 	if(not ent or not ent.IsSpaceMachine)
 	then
 		POPUP_TEXT_LINES={}
+		popupWidth=0
 		return
 	end
 	local vars=ent:GetNWVarTable()
@@ -163,7 +166,11 @@ hook.Add("PostDrawTranslucentRenderables","is_devicepopup",function(Depth,Skybox
 				and tr.HitPos:DistToSqr(tr.StartPos)<=POPUP_AUTO_OPEN_DISTANCE*POPUP_AUTO_OPEN_DISTANCE
 			)
 		)
-	) then return end
+	)
+	then
+		popupWidth=0
+		return
+	end
 	local width,origin,normal
 	local radius=ent:GetModelRadius()
 	if(radius<POPUP_MOVE_ASIDE_RADIUS)
@@ -185,6 +192,8 @@ hook.Add("PostDrawTranslucentRenderables","is_devicepopup",function(Depth,Skybox
 		normal=tr.HitNormal
 	end
 	width=math.Clamp(width,12,80)
+	popupWidth=popupWidth+math.Clamp(width-popupWidth,-POPUP_ANIMATION_SPEED,POPUP_ANIMATION_SPEED)
+	width=popupWidth
 	render.SetMaterial(Material("models/props_combine/combine_interface_disp"))
 	render.DrawQuadEasy(origin,normal,width,width,Color(255,255,255,255))
 	local textAng=normal:Angle()
