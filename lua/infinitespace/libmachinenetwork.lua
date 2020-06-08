@@ -74,7 +74,16 @@ function ENT:VentResource(res,diff)
 	local current=self:GetResource(res)
 	if diff>current then diff=current end
 	self:SetResource(res,current-diff)
-	--TODO: Affect environment
+	local resource=GetResourceData(res)
+	local phase=resource.type
+	if(phase=="solid")
+	then
+		--TODO: Eject solid resource.
+	elseif(phase=="liquid" or phase=="gas")
+	then
+		local atmos=self:GetEnvironment():GetAtmosphere(phase)
+		atmos[res]=(atmos[res] or 0)+diff
+	end
 end
 
 function ENT:ProcessResources()
