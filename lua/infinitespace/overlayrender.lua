@@ -8,6 +8,9 @@ then
 end
 
 local POPUP_MOVE_ASIDE_RADIUS=100
+local POPUP_AUTO_OPEN_DISTANCE=100
+local POPUP_MINIMUM_WIDTH=12
+local POPUP_MAXIMUM_WIDTH=80
 local POPUP_TEXT_SCALE=1/256
 local POPUP_TEXT_PAD=150
 local POPUP_TEXT_FONT="IS_POPUP_FONT"
@@ -151,12 +154,25 @@ hook.Add("PostDrawTranslucentRenderables","is_devicepopup",function(Depth,Skybox
 	if(#surplusLines>0) then table.insert(lines,"Output:") end
 	addLines(surplusLines)
 	POPUP_TEXT_LINES=lines
-	if(not contextMenuOpen) then return end
-	local width=math.Clamp(LocalPlayer():GetShootPos():Distance(tr.HitPos)/3,12,80)
-	local origin,normal
-	if(ent:GetModelRadius()<POPUP_MOVE_ASIDE_RADIUS)
+	if(
+		LocalPlayer():GetActiveWeapon():GetClass()=="gmod_tool"
+		or (
+			not contextMenuOpen
+			and not (
+				tr.Hit
+				and tr.HitPos:DistToSqr(tr.StartPos)<=POPUP_AUTO_OPEN_DISTANCE*POPUP_AUTO_OPEN_DISTANCE
+			)
+		)
+	) then return end
+	local width,origin,normal
+	local radius=ent:GetModelRadius()
+	if(radius<POPUP_MOVE_ASIDE_RADIUS)
 	then
-		origin=tr.HitPos+Vector(0,0,1+width/2)
+		origin=ent:OBBCenter()
+		origin.z=ent:OBBMaxs().z
+		origin=ent:LocalToWorld(origin)
+		width=math.Clamp(LocalPlayer():GetShootPos():Distance(origin)/3,POPUP_MINIMUM_WIDTH,POPUP_MAXIMUM_WIDTH)
+		origin.z=origin.z+width/2
 		normal=-tr.Normal
 		if(normal.x==0 and normal.y==0) then normal=Vector(0,0,1)
 		else
@@ -164,9 +180,11 @@ hook.Add("PostDrawTranslucentRenderables","is_devicepopup",function(Depth,Skybox
 			normal:Normalize()
 		end
 	else
-		origin=tr.HitPos+tr.HitNormal*width/10
+		width=math.Clamp(LocalPlayer():GetShootPos():Distance(tr.HitPos)/3,POPUP_MINIMUM_WIDTH,POPUP_MAXIMUM_WIDTH)
+		origin=tr.HitPos+tr.HitNormal*10
 		normal=tr.HitNormal
 	end
+	width=math.Clamp(width,12,80)
 	render.SetMaterial(Material("models/props_combine/combine_interface_disp"))
 	render.DrawQuadEasy(origin,normal,width,width,Color(255,255,255,255))
 	local textAng=normal:Angle()
