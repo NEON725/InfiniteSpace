@@ -129,6 +129,7 @@ hook.Add("PostDrawTranslucentRenderables","is_devicepopup",function(Depth,Skybox
 	end
 	local vars=ent:GetNWVarTable()
 	local lines={ent.PrintName.." x"..(ent:GetStorageMultiplier() or "???")}
+	if(ent:GetPower()) then table.insert(lines,"POWERED ON") end
 	local storageLines={}
 	local surplusLines={}
 	local resources={}
