@@ -102,11 +102,17 @@ function ENT:ProcessResources()
 end
 
 function UseBasicPowerSwitch(self,ply,caller) self:SetPower(not self:GetPower()) end
+function TriggerInputPowerSwitch(self,iname,value)
+	if(iname:lower()=="power") then self:SetPower(value!=0)
+	else self.Baseclass.TriggerInput(self,iname,value) end
+end
 function ENT:SetPower(on) self:SetNWBool("power",on) end
 function ENT:GetPower() return self:GetNWBool("power") end
 
 function GenerateBasicConverterMachine(ENT,Inputs,Outputs)
 	ENT.Use=UseBasicPowerSwitch
+	ENT.TriggerInput=TriggerInputPowerSwitch
+	ENT.WireInputs={"Power"}
 	function ENT:RecalculateStorage()
 		for res,amt in pairs(Inputs) do self:SetMaxResource(res,amt*self:GetStorageMultiplier()) end
 	end

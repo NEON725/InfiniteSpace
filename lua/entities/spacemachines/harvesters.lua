@@ -31,6 +31,8 @@ do
 		ENT.ToolIcon=(type=="liquid") and "icon16/water.png" or "icon16/weather_clouds.png"
 		ENT.Models=Models[type]
 		ENT.Use=UseBasicPowerSwitch
+		ENT.WireInputs={"Power"}
+		ENT.TriggerInput=TriggerInputPowerSwitch
 		ENT.resource=res
 		function ENT:Initialize()
 			self.Baseclass.Initialize(self)
