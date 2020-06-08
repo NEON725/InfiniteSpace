@@ -55,6 +55,18 @@ do
 		function ENT:RecalculateStorage()
 			self:SetMaxResource(res,math.floor(self:GetStorageMultiplier()/tab.volume))
 		end
+		ENT.WireInputs={"Vent"}
+		ENT.WireOutputs={"Current","Maximum"}
+		function ENT:ProcessResources()
+			self.Baseclass.ProcessResources(self)
+			local vent=self:GetWireInput("Vent")
+			if(vent>0)
+			then
+				self:VentResource(res,math.min(vent,self:GetResource(res)))
+			end
+			self:SetWireOutput("Current",self:GetResource(res))
+			self:SetWireOutput("Maximum",self:GetMaxResource(res))
+		end
 		FinishSubMachine(prior)
 	end
 end

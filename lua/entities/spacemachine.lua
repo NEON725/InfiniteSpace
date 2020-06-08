@@ -26,14 +26,30 @@ function ENT:Initialize()
 			self:SetStorageMultiplier(math.floor(phys:GetVolume()/10))
 		end
 		self:SetUseType(self:GetUseType())
-		self.Inputs=Wire_CreateOutputs(self,self:GetWireInputs())
-		self.Outputs=Wire_CreateOutputs(self,self:GetWireOutputs())
+		local inputNames,inputTypes=self.WireInputs,self.WireInputTypes
+		if(inputNames and not inputTypes)
+		then
+			inputTypes={}
+			for _,__ in pairs(inputNames) do table.insert(inputTypes,"NORMAL") end
+		end
+		local outputNames,outputTypes=self.WireOutputs,self.WireOutputTypes
+		if(outputNames and not outputTypes)
+		then
+			outputTypes={}
+			for _,__ in pairs(outputNames) do table.insert(outputTypes,"NORMAL") end
+		end
+		self.WireInputs=nil
+		self.WireInputTypes=nil
+		self.WireOutputs=nil
+		self.WireOutputTypes=nil
+		if(inputNames) then self.Inputs=WireLib.CreateSpecialInputs(self,inputNames,inputTypes) end
+		if(outputNames) then self.Outputs=WireLib.CreateSpecialOutputs(self,outputNames,outputTypes) end
 	end
 end
 
-function ENT:GetWireInputs() return {} end
-function ENT:GetWireOutputs() return {} end
-function ENT:TriggerInput(iname,value) self:SetNWInt(iname,value) end
+function ENT:TriggerInput(iname,value) self:SetNWInt("wire_"..iname,value) end
+function ENT:GetWireInput(iname) return self:GetNWInt("wire_"..iname) end
+function ENT:SetWireOutput(iname,value) Wire_TriggerOutput(self,iname,value) end
 function ENT:TooltipDisplayLines() return {} end
 
 function ENT:GetUseType() return SIMPLE_USE end
