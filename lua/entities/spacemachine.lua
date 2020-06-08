@@ -1,6 +1,6 @@
 AddCSLuaFile()
 ENT.Type="anim"
-ENT.Base="base_gmodentity"
+ENT.Base="base_wire_entity"
 ENT.PrintName=nil
 ENT.WireDebugName="SpaceMachine"
 DEFINE_BASECLASS(ENT.Base)
