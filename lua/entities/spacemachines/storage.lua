@@ -2,7 +2,7 @@ PushMachineLibNode("Storage")
 
 local Models=
 {
-	Liquid=
+	liquid=
 	{
 		"models/props_farm/oilcan01.mdl",
 		"models/props_farm/oilcan01b.mdl",
@@ -29,7 +29,7 @@ local Models=
 		"models/props_trainyard/metal_watertower002.mdl",
 		"models/props_interiors/BathTub01a.mdl"
 	},
-	Gas=
+	gas=
 	{
 		"models/props_c17/canister01a.mdl",
 		"models/props_c17/canister02a.mdl",
@@ -45,7 +45,7 @@ for res,tab in pairs(IS_RESOURCES)
 do
 	local type=tab.type
 	if(tab.abstract) then continue end
-	if(type=="Liquid" or type=="Gas")
+	if(type=="liquid" or type=="gas")
 	then
 		local prior=BeginSubMachine("storage_"..res:lower())
 		ENT.PrintName=res.." Storage"

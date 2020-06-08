@@ -2,7 +2,7 @@ BASE_RESOURCE=
 {
 	volume=1,
 	equivalents={},
-	type="Gas",
+	type="gas",
 	abstract=false
 }
 IS_RESOURCES=
@@ -10,7 +10,7 @@ IS_RESOURCES=
 	Heating=
 	{
 		abstract=true,
-		type="Energy",
+		type="energy",
 		equivalents=
 		{
 			["LV Electricity"]=1,
@@ -21,7 +21,7 @@ IS_RESOURCES=
 	Cooling=
 	{
 		abstract=true,
-		type="Energy",
+		type="energy",
 		equivalents=
 		{
 			Water=1,
@@ -33,11 +33,11 @@ IS_RESOURCES=
 	Nitrogen={},
 	Hydrogen={},
 	["Vespene Gas"]={volume=5},
-	Water={type="Liquid",volume=3},
+	Water={type="liquid",volume=3},
 	["Carbon Dioxide"]={volume=3},
 	["LV Electricity"]=
 	{
-		type="Energy",
+		type="energy",
 		equivalents=
 		{
 			["MV Electricity"]=5,
@@ -46,13 +46,13 @@ IS_RESOURCES=
 	},
 	["MV Electricity"]=
 	{
-		type="Energy",
+		type="energy",
 		equivalents={["HV Electricity"]=5}
 	},
-	["HV Electricity"]={type="Energy"},
+	["HV Electricity"]={type="energy"},
 	Energy=
 	{
-		type="Energy",
+		type="energy",
 		equivalents=
 		{
 			["LV Electricity"]=1,

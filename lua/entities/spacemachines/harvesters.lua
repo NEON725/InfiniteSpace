@@ -2,7 +2,7 @@ PushMachineLibNode("Harvesters")
 
 local Models=
 {
-	Liquid=
+	liquid=
 	{
 		"models/props_farm/water_spigot.mdl",
 		"models/props_2fort/waterpump001.mdl",
@@ -10,7 +10,7 @@ local Models=
 		"models/props_wasteland/buoy01.mdl",
 		"models/props_swamp/buoy_ref.mdl"
 	},
-	Gas=
+	gas=
 	{
 		"models/props_2fort/chimney003.mdl",
 		"models/props_farm/air_intake.mdl",
@@ -23,12 +23,12 @@ for res,tab in pairs(IS_RESOURCES)
 do
 	local type=tab.type
 	if(tab.abstract) then continue end
-	if(type=="Liquid" or type=="Gas")
+	if(type=="liquid" or type=="gas")
 	then
 		local prior=BeginSubMachine("harvester_"..res:lower())
-		ENT.PrintName=res.." "..((type=="Liquid") and "Pump" or "Filter")
+		ENT.PrintName=res.." "..((type=="liquid") and "Pump" or "Filter")
 		ENT.Base="spacemachine"
-		ENT.ToolIcon=(type=="Liquid") and "icon16/water.png" or "icon16/weather_clouds.png"
+		ENT.ToolIcon=(type=="liquid") and "icon16/water.png" or "icon16/weather_clouds.png"
 		ENT.Models=Models[type]
 		ENT.Use=UseBasicPowerSwitch
 		ENT.resource=res
