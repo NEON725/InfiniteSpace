@@ -50,7 +50,8 @@ end
 function ENT:TriggerInput(iname,value) self:SetNWInt("wire_"..iname,value) end
 function ENT:GetWireInput(iname) return self:GetNWInt("wire_"..iname) end
 function ENT:SetWireOutput(iname,value) Wire_TriggerOutput(self,iname,value) end
-function ENT:TooltipDisplayLines() return {} end
+function ENT:SetTooltipDisplayLines(lines) self:AssignPendingNWVar("tooltip_lines",lines,"Table") end
+function ENT:GetTooltipDisplayLines() return self:GetActualOrPendingNWVar("tooltip_lines","Table") end
 
 function ENT:GetUseType() return SIMPLE_USE end
 function ENT:Use() end

@@ -150,8 +150,8 @@ hook.Add("PostDrawTranslucentRenderables","is_devicepopup",function(Depth,Skybox
 	function addLines(newlines)
 		for _,line in pairs(newlines) do table.insert(lines,line) end
 	end
-	local miscLines=ent:TooltipDisplayLines()
-	addLines(miscLines)
+	local miscLines=ent:GetTooltipDisplayLines()
+	if(miscLines) then addLines(miscLines) end
 	if(#storageLines>0) then table.insert(lines,"Storage:") end
 	addLines(storageLines)
 	if(#surplusLines>0) then table.insert(lines,"Output:") end

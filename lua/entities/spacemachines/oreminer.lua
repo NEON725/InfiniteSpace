@@ -45,6 +45,7 @@ do
 		then
 			if(IsValid(self.attachedVein))
 			then
+				self:SetTooltipDisplayLines({self.ore.." exposed:",self.attachedVein:GetResource(self.ore)})
 				local dist2=self:GetPos():DistToSqr(self.rootPos)
 				if(dist2>10000)
 				then
@@ -58,15 +59,13 @@ do
 					self:SetPos(self.rootPos)
 					self:SetAngles(self.rootAngle)
 				end
+			else
+				self:SetTooltipDisplayLines({"Touch a "..self.ore," vein with this.","Then weld your"," machinery to this"," miner."})
 			end
 		end
 	end
 
 	function ENT:RequestResource(res,amt) return self.attachedVein and self.attachedVein:RequestResource(res,amt) or 0 end
-
-	function ENT:TooltipDisplayLines()
-		return {"Touch a "..self.ore," vein with this.","Then weld your"," machinery to this"," miner."}
-	end
 
 	FinishSubMachine(prior)
 end
