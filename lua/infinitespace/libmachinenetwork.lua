@@ -67,6 +67,7 @@ function ENT:RequestResourceFromNetwork(res,amt)
 	return maxamt-amt
 end
 function ENT:ProduceResource(res,amt)
+	amt=amt-self:OfferResourceToNetwork(res,amt)
 	self:SetResource(res,self:GetResource(res)+amt)
 end
 
